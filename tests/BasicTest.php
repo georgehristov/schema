@@ -61,4 +61,18 @@ class BasicTest extends PHPUnit_SchemaTestCase
             ->dropField('bar', ['type' => 'integer'])
             ->alter();
     }
+
+    /**
+     * Tests creating direct migrator.
+     */
+    public function testDirectMigratorResolving()
+    {
+        $migrator = $this->getMigrator();
+        
+        $migratorClass = get_class($migrator);
+        
+        $directMigrator = $migratorClass::of($this->db);
+        
+        $this->assertEquals($migratorClass, get_class($directMigrator));
+    }
 }
