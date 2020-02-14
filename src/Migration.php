@@ -77,6 +77,22 @@ class Migration extends Expression
 
     /** @var array use this array in extended classes to overwrite or extend values of default mapping */
     public $mapToAgile = [];
+    
+    /** @var array stores migrator to use based on driver */
+    private static $registry = [
+        'sqlite' => Migration\SQLite::class,
+        'mysql' => Migration\MySQL::class,
+        'pgsql' => Migration\PgSQL::class,
+        'oci' => Migration\Oracle::class,
+    ];
+
+    /**
+     * @deprecated use Migration::of instead
+     */
+    public static function getMigration($source, $params = []): self
+    {
+        return self::of($source, $params);
+    }
 
     /**
      * Factory method to get correct Migration subclass object depending on connection given.
@@ -88,26 +104,30 @@ class Migration extends Expression
      *
      * @return Migration Subclass
      */
-    public static function getMigration($source, $params = []): self
+    public static function of($source, $params = []): self
     {
-        $c = static::getConnection($source);
+        $connection = static::getConnection($source);
 
-        switch ($c->driver) {
-            case 'sqlite':
-                return new Migration\SQLite($source, $params);
-            case 'mysql':
-                return new Migration\MySQL($source, $params);
-            case 'pgsql':
-                return new Migration\PgSQL($source, $params);
-            case 'oci':
-                return new Migration\Oracle($source, $params);
-            default:
-                throw new Exception([
+        if (! $migrator = self::$registry[$connection->driver] ?? null) {
+            throw new Exception([
                     'Not sure which migration class to use for your DSN',
-                    'driver' => $c->driver,
+                    'driver' => $connection->driver,
                     'source' => $source,
-                ]);
+            ]);
         }
+
+        return new $migrator($source, $params);
+    }
+
+    public static function register($driver, $migrator = null)
+    {
+        if (is_array($drivers = $driver)) {
+            foreach ($drivers as $driver => $migrator) {
+                self::register($driver, $migrator);
+            }
+        }
+
+        self::$registry[$driver] = $migrator;
     }
 
     /**
@@ -339,6 +359,14 @@ class Migration extends Expression
     }
 
     /**
+     * @deprecated use Migration::run instead
+     */
+    public function migrate(): string
+    {
+        return $this->run();
+    }
+
+    /**
      * Will read current schema and consult current 'field' arguments, to see if they are matched.
      * If table does not exist, will invoke ->create. If table does exist, then it will execute
      * methods ->newField(), ->dropField() or ->alterField() as needed, then call ->alter().
@@ -347,7 +375,7 @@ class Migration extends Expression
      *
      * @return string Returns short textual info for logging purposes
      */
-    public function migrate(): string
+    public function run(): string
     {
         $changes = $added = $altered = $dropped = 0;
 
