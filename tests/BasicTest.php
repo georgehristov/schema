@@ -12,8 +12,8 @@ class BasicTest extends PHPUnit_SchemaTestCase
     public function testCreateAndAlter()
     {
         $this->dropTable('user');
-        $m = $this->getMigration();
-        $m->table('user')->id()
+
+        $this->getMigrator()->table('user')->id()
             ->field('foo')
             ->field('bar', ['type' => 'integer'])
             ->field('baz', ['type' => 'text'])
@@ -27,8 +27,7 @@ class BasicTest extends PHPUnit_SchemaTestCase
             ->field('en', ['type' => 'enum'])
             ->create();
 
-        $m = $this->getMigration();
-        $m->table('user')
+        $this->getMigrator()->table('user')
             ->newField('zed', ['type' => 'integer'])
             ->alter();
     }
@@ -43,8 +42,8 @@ class BasicTest extends PHPUnit_SchemaTestCase
         }
 
         $this->dropTable('user');
-        $m = $this->getMigration();
-        $m->table('user')->id()
+
+        $this->getMigrator()->table('user')->id()
             ->field('foo')
             ->field('bar', ['type' => 'integer'])
             ->field('baz', ['type' => 'text'])
@@ -58,8 +57,7 @@ class BasicTest extends PHPUnit_SchemaTestCase
             ->field('en', ['type' => 'enum'])
             ->create();
 
-        $m = $this->getMigration();
-        $m->table('user')
+        $this->getMigrator()->table('user')
             ->dropField('bar', ['type' => 'integer'])
             ->alter();
     }
