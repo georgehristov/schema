@@ -77,13 +77,13 @@ class Migration extends Expression
 
     /** @var array use this array in extended classes to overwrite or extend values of default mapping */
     public $mapToAgile = [];
-    
+
     /** @var array stores migrator to use based on driver */
     private static $registry = [
         'sqlite' => Migration\SQLite::class,
-        'mysql' => Migration\MySQL::class,
-        'pgsql' => Migration\PgSQL::class,
-        'oci' => Migration\Oracle::class,
+        'mysql'  => Migration\MySQL::class,
+        'pgsql'  => Migration\PgSQL::class,
+        'oci'    => Migration\Oracle::class,
     ];
 
     /**
@@ -109,14 +109,14 @@ class Migration extends Expression
         $connection = static::getConnection($source);
 
         $migrator = self::$registry[$connection->driver] ?? static::class;
-        
+
         // if used within a subclass Migration method will create migrator of that class
         // if $migrator class is the generic class Migration then migrator was not resolved correctly
         if ($migrator == __CLASS__) {
             throw new Exception([
-                    'Not sure which migration class to use for your DSN',
-                    'driver' => $connection->driver,
-                    'source' => $source,
+                'Not sure which migration class to use for your DSN',
+                'driver' => $connection->driver,
+                'source' => $source,
             ]);
         }
 

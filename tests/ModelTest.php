@@ -20,7 +20,7 @@ class ModelTest extends \atk4\schema\PHPUnit_SchemaTestCase
         $this->dropTable('user');
 
         $migrator = $this->getMigrator();
-        
+
         $migrator->table('user')->id()
             ->field('foo')
             ->field('str', ['type' => 'string'])
@@ -35,7 +35,7 @@ class ModelTest extends \atk4\schema\PHPUnit_SchemaTestCase
             ->field('arr', ['type' => 'array'])
             ->field('obj', ['type' => 'object'])
             ->create();
-        
+
         $this->db->dsql()->table('user')
             ->set([
                 'id'       => 1,
@@ -97,7 +97,7 @@ class ModelTest extends \atk4\schema\PHPUnit_SchemaTestCase
     public function testCreateModel()
     {
         $this->dropTable('user');
-        
+
         \atk4\schema\Migration::of(new TestUser($this->db))->run();
 
         $user_model = $this->getMigrator($this->db)->createModel($this->db, 'user');
