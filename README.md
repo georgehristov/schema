@@ -55,7 +55,7 @@ $migrator->table('user')
 ```
 
 Currently atk4/schema fully supports MySQL and SQLite connections, partly PgSQL and Oracle connections.
-Other SQL databases are not yet natively supported but you cant register your migrator class at runtime.
+Other SQL databases are not yet natively supported but you can register your migrator class at runtime.
 
 ``` php
 
