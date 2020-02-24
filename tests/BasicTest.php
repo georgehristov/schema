@@ -95,13 +95,13 @@ class BasicTest extends PHPUnit_SchemaTestCase
         Migration::register($this->driver, CustomMySQLMigrator::class);
 
         $this->assertEquals(CustomMySQLMigrator::class, get_class($this->getMigrator()));
-        
+
         CustomMySQLMigrator::register($this->driver);
-        
+
         $this->assertEquals(CustomMySQLMigrator::class, get_class($this->getMigrator()));
-        
+
         $this->expectException(Exception::class);
-        
+
         Migration::register($this->driver, CustomMigrator::class);
     }
 }

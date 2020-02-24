@@ -80,14 +80,14 @@ class Migration extends Expression
 
     /** 
      * Stores migrator class to use based on driver.
-     * 
+     *
      * Visibility is intentionally set to private.
      * If generic class Migration::of($source) is called, the migrator class will be resolved based on driver of $source.
      * When specific migrator class e.g Migration\MySQL::of($source) is called, driver will not be resolved (the $registry property is NOT visible).
      * MySQL migrator class will be used explicitly.
      *
      * @var array $registry
-     * 
+     *
      * */
     private static $registry = [
         'sqlite' => Migration\SQLite::class,
@@ -155,7 +155,7 @@ class Migration extends Expression
         elseif (!$migrator) {
             throw new Exception(['Cannot register generic Migration class', 'driver' => $driver]);
         }
-        
+
         if (!is_subclass_of($migrator, self::class)) {
             throw new Exception(['Migrator must be descendant to generic Migration class', 'migrator' => $migrator]);
         }
