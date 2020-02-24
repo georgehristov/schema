@@ -86,7 +86,7 @@ class Migration extends Expression
      * When specific migrator class e.g Migration\MySQL::of($source) is called, driver will not be resolved (the $registry property is NOT visible).
      * MySQL migrator class will be used explicitly.
      *
-     * @var array $registry
+     * @var array
      *
      * */
     private static $registry = [
@@ -151,8 +151,7 @@ class Migration extends Expression
         // forward to generic Migration::register if called with a descendant class e.g Migration\MySQL::register
         if (static::class !== __CLASS__) {
             return call_user_func([__CLASS__, 'register'], $driver, $migrator ?: static::class);
-        }
-        elseif (!$migrator) {
+        } elseif (!$migrator) {
             throw new Exception(['Cannot register generic Migration class', 'driver' => $driver]);
         }
 
