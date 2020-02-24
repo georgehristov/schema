@@ -78,7 +78,17 @@ class Migration extends Expression
     /** @var array use this array in extended classes to overwrite or extend values of default mapping */
     public $mapToAgile = [];
     
-    /** @var array stores migrator to use based on driver */
+    /** 
+     * Stores migrator class to use based on driver.
+     * 
+     * Visibility is intentionally set to private.
+     * If generic class Migration::of($source) is called, the migrator class will be resolved based on driver of $source.
+     * When specific migrator class e.g Migration\MySQL::of($source) is called, driver will not be resolved (the $registry property is NOT visible).
+     * MySQL migrator class will be used explicitly.
+     *
+     * @var array $registry
+     * 
+     * */
     private static $registry = [
         'sqlite' => Migration\SQLite::class,
         'mysql' => Migration\MySQL::class,
@@ -123,10 +133,37 @@ class Migration extends Expression
         return new $migrator($source, $params);
     }
 
+    /**
+     * Adds migrator class to the registry for resolving in Migration::of method.
+     *
+     * Can be used as:
+     *
+     * Migration::register('mysql', CustomMigration\MySQL), or
+     * CustomMigration\MySQL::register('mysql')
+     *
+     * CustomMigration\MySQL must be descendant of Migration class.
+     *
+     * @param string $driver
+     * @param string $migrator
+     */
     public static function register($driver, $migrator = null)
     {
+        // forward to generic Migration::register if called with a descendant class e.g Migration\MySQL::register
+        if (static::class !== __CLASS__) {
+            return Migration::register($driver, $migrator ?: static::class);
+        }
+        elseif (!$migrator) {
+            throw new Exception(['Cannot register generic Migration class', 'driver' => $driver]);
+        }
+        
+        if (!is_subclass_of($migrator, self::class)) {
+            throw new Exception(['Migrator must be descendant to generic Migration class', 'migrator' => $migrator]);
+        }
+
         if (is_array($drivers = $driver)) {
             foreach ($drivers as $driver => $migrator) {
+                // self must be used instead of static as $registry property is private
+                // it is available only to generic Migrator class
                 self::register($driver, $migrator);
             }
         }

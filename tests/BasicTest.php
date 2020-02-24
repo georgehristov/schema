@@ -3,6 +3,17 @@
 namespace atk4\schema\tests;
 
 use atk4\schema\PHPUnit_SchemaTestCase;
+use atk4\schema\Migration;
+use atk4\core\Exception;
+
+class CustomMySQLMigrator extends \atk4\schema\Migration
+{
+    
+}
+class CustomMigrator
+{
+    
+}
 
 class BasicTest extends PHPUnit_SchemaTestCase
 {
@@ -74,5 +85,23 @@ class BasicTest extends PHPUnit_SchemaTestCase
         $directMigrator = $migratorClass::of($this->db);
         
         $this->assertEquals($migratorClass, get_class($directMigrator));
+    }
+
+    /**
+     * Tests registering migrator.
+     */
+    public function testMigratorRegistering()
+    {
+        Migration::register($this->driver, CustomMySQLMigrator::class);
+
+        $this->assertEquals(CustomMySQLMigrator::class, get_class($this->getMigrator()));
+        
+        CustomMySQLMigrator::register($this->driver);
+        
+        $this->assertEquals(CustomMySQLMigrator::class, get_class($this->getMigrator()));
+        
+        $this->expectException(Exception::class);
+        
+        Migration::register($this->driver, CustomMigrator::class);
     }
 }
