@@ -3,16 +3,15 @@
 namespace atk4\schema\tests;
 
 use atk4\core\Exception;
-use atk4\schema\PHPUnit_SchemaTestCase;
 use atk4\schema\Migration;
+use atk4\schema\PHPUnit_SchemaTestCase;
 
-class CustomMySQLMigrator extends \atk4\schema\Migration {
-
+class CustomMySQLMigrator extends \atk4\schema\Migration
+{
 }
 
 class CustomMigrator
 {
-
 }
 
 class BasicTest extends PHPUnit_SchemaTestCase
