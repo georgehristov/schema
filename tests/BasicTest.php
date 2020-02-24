@@ -79,11 +79,11 @@ class BasicTest extends PHPUnit_SchemaTestCase
     public function testDirectMigratorResolving()
     {
         $migrator = $this->getMigrator();
-        
+
         $migratorClass = get_class($migrator);
-        
+
         $directMigrator = $migratorClass::of($this->db);
-        
+
         $this->assertEquals($migratorClass, get_class($directMigrator));
     }
 

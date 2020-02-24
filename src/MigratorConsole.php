@@ -21,7 +21,7 @@ class MigratorConsole extends \atk4\ui\Console
         // run inside callback
         $this->set(function ($console) use ($models) {
             $console->notice('Preparing to migrate models');
-            
+
             $persistence = $console->app->db;
 
             foreach ($models as $model) {
@@ -31,7 +31,7 @@ class MigratorConsole extends \atk4\ui\Console
                 }
 
                 $migrator = $this->migrator_class ?: Migration::class;
-                
+
                 $result = $migrator::of($model)->run();
 
                 $console->debug('  '.get_class($model).'.. '.$result);
