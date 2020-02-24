@@ -78,7 +78,7 @@ class Migration extends Expression
     /** @var array use this array in extended classes to overwrite or extend values of default mapping */
     public $mapToAgile = [];
 
-    /** 
+    /**
      * Stores migrator class to use based on driver.
      *
      * Visibility is intentionally set to private.
@@ -150,7 +150,7 @@ class Migration extends Expression
     {
         // forward to generic Migration::register if called with a descendant class e.g Migration\MySQL::register
         if (static::class !== __CLASS__) {
-            return Migration::register($driver, $migrator ?: static::class);
+            return call_user_func([__CLASS__, 'register'], $driver, $migrator ?: static::class);
         }
         elseif (!$migrator) {
             throw new Exception(['Cannot register generic Migration class', 'driver' => $driver]);
